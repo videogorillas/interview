@@ -387,59 +387,40 @@ public class StacksAndQueuesTest {
 
     static class AnimalShelter {
         LinkedList<Animal> all = new LinkedList<>();
-        LinkedList<Dog> dogs = new LinkedList<>();
-        LinkedList<Cat> cats = new LinkedList<>();
 
         public void enqueue(Animal animal) {
             all.add(animal);
-            if (animal instanceof Cat) {
-                cats.add((Cat) animal);
-            } else if (animal instanceof Dog) {
-                dogs.add((Dog) animal);
-            }
         }
 
         public Animal dequeueAny() {
             Animal animal = all.remove();
             if (animal == null)
                 return null;
-
-            if (animal instanceof Dog) {
-                remove(animal, dogs);
-            } else if (animal instanceof Cat) {
-                remove(animal, cats);
-            }
             return animal;
         }
 
-        private static Animal remove(Animal animal, LinkedList<? extends Animal> list) {
-            ListIterator<? extends Animal> it = list.listIterator();
-            if (it != null) {
-                while (it.hasNext()) {
-                    Animal next = it.next();
-                    if (next.equals(animal)) {
-                        it.remove();
-                        return next;
-                    }
+        public Dog dequeueDog() {
+            ListIterator<Animal> it = all.listIterator();
+            while (it.hasNext()) {
+                Animal next = it.next();
+                if (next instanceof Dog) {
+                    it.remove();
+                    return (Dog) next;
                 }
             }
             return null;
         }
 
-        public Dog dequeueDog() {
-            Dog dog = dogs.remove();
-            if (dog == null)
-                return null;
-            remove(dog, all);
-            return dog;
-        }
-
         public Cat dequeueCat() {
-            Cat cat = cats.remove();
-            if (cat == null)
-                return null;
-            remove(cat, all);
-            return cat;
+            ListIterator<Animal> it = all.listIterator();
+            while (it.hasNext()) {
+                Animal next = it.next();
+                if (next instanceof Dog) {
+                    it.remove();
+                    return (Cat) next;
+                }
+            }
+            return null;
         }
 
         @Override
